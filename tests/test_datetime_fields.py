@@ -285,62 +285,62 @@ def test_datetime_field_is_none():
 
 def test_timestamp_field_parse_value():
     timestamp = 1509289889
-    timestampField = fields.TimestampField()
+    field = fields.TimestampField()
 
-    dt = timestampField.parse_value(timestamp)
+    dt = field.parse_value(timestamp)
 
-    assert datetime.datetime(2017, 10, 29, 16, 11, 29) == dt
+    assert dt == datetime.datetime(2017, 10, 29, 15, 11, 29)
 
 
 def test_timestamp_field_parse_str_value():
     timestamp = "1509289889"
-    timestampField = fields.TimestampField()
+    field = fields.TimestampField()
 
-    dt = timestampField.parse_value(timestamp)
+    dt = field.parse_value(timestamp)
 
-    assert datetime.datetime(2017, 10, 29, 16, 11, 29) == dt
+    assert dt == datetime.datetime(2017, 10, 29, 15, 11, 29)
 
 
 def test_timestamp_field_parse_none():
     timestamp = None
-    timestampField = fields.TimestampField()
+    field = fields.TimestampField()
 
-    dt = timestampField.parse_value(timestamp)
+    dt = field.parse_value(timestamp)
 
     assert dt is None
 
 
 def test_timestamp_field_parse_timestamp_0():
     timestamp = 0
-    timestampField = fields.TimestampField()
+    field = fields.TimestampField()
 
-    dt = timestampField.parse_value(timestamp)
+    dt = field.parse_value(timestamp)
 
-    assert datetime.datetime(1970, 1, 1, 1, 0) == dt
+    assert dt == datetime.datetime(1970, 1, 1, 0, 0)
 
 
 def test_timestamp_field_parse_invalid_timestamp():
     timestamp = "no_timestamp"
-    timestampField = fields.TimestampField()
+    field = fields.TimestampField()
 
     with pytest.raises(ValueError):
-        timestampField.parse_value(timestamp)
+        field.parse_value(timestamp)
 
 
 def test_timestamp_field_to_struct():
-    dt = datetime.datetime(2017, 10, 29, 16, 11, 29)
-    timestampField = fields.TimestampField()
+    dt = datetime.datetime(2017, 10, 29, 15, 11, 29)
+    field = fields.TimestampField()
 
-    timestamp = timestampField.to_struct(dt)
+    timestamp = field.to_struct(dt)
 
-    assert 1509289889 == timestamp
+    assert timestamp == 1509289889
 
 
 def test_timestamp_field_none_to_struct():
     dt = None
-    timestampField = fields.TimestampField()
+    field = fields.TimestampField()
 
-    timestamp = timestampField.to_struct(dt)
+    timestamp = field.to_struct(dt)
 
     assert timestamp is None
 
@@ -352,8 +352,8 @@ def test_timestamp():
     event = Event()
     event.timestamp = 1509289889
 
-    assert datetime.datetime(2017, 10, 29, 16, 11, 29) == event.timestamp
-    assert {'timestamp': 1509289889} == event.to_struct()
+    assert event.timestamp == datetime.datetime(2017, 10, 29, 15, 11, 29)
+    assert event.to_struct() == {'timestamp': 1509289889}
 
 
 def test_timestamp_is_none():
@@ -364,4 +364,4 @@ def test_timestamp_is_none():
     event.timestamp = None
 
     assert event.timestamp is None
-    assert {} == event.to_struct()
+    assert event.to_struct() == {}

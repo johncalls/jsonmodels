@@ -466,20 +466,22 @@ class TimestampField(BaseField):
 
     types = (datetime.datetime,)
 
-    def __init__(self, *args, **kwargs):
-        """Init."""
-        super(TimestampField, self).__init__(*args, **kwargs)
-
     def to_struct(self, value):
-        """Cast `datetime` object to POSIX timestamp."""
+        """
+        Cast `datetime` object expected to be in UTC to POSIX timestamp.
+        """
         if value is None:
             return value
-        return int(value.strftime('%s'))
+        is_naive = (value.tzinfo is None or
+                    value.tzinfo.utcoffset(value) is None)
+        if is_naive:
+            utc_naive = value
+        else:
+            utc_naive = value.replace(tzinfo=None) - value.utcoffset()
+        return (utc_naive - datetime.datetime(1970, 1, 1)).total_seconds()
 
     def parse_value(self, value):
         """Parse POSIC timestamp into instance of `datetime`."""
         if value is None:
             return value
-        if isinstance(value, datetime.datetime):
-            return value
-        return datetime.datetime.fromtimestamp(int(value))
+        return datetime.datetime.utcfromtimestamp(int(value))
