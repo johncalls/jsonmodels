@@ -336,6 +336,14 @@ def test_timestamp_field_to_struct():
     assert timestamp == 1509289889
 
 
+def test_timestamp_field_to_struct_with_tzinfo():
+    dt = datetime.datetime(2017, 10, 29, 17, 11, 29,
+                           tzinfo=tzoffset(None, 7200))
+    field = fields.TimestampField()
+
+    assert field.to_struct(dt) == 1509289889
+
+
 def test_timestamp_field_none_to_struct():
     dt = None
     field = fields.TimestampField()
